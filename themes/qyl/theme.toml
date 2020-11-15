@@ -1,0 +1,11 @@
+name = "qyl"
+license = "MIT"
+description = "Theme for hujiale.me"
+homepage = "https://hujiale.me"
+tags = []
+features = []
+min_version = "0.1"
+
+[author]
+  name = "hjl"
+  homepage = "https://hujiale.me"

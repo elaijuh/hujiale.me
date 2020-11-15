@@ -1,0 +1,30 @@
+baseURL = "https://hujiale.me/"
+languageCode = "en-us"
+title = "栖雲樓"
+theme = "qyl"
+googleAnalytics = "UA-57201547-1"
+paginate = 100
+
+[permalinks]
+	blog = "/blog/:year/:slug/"
+
+[author]
+	name = "栖雲樓主"
+  email = "hjiale@gmail.com"
+
+[taxonomies]
+	tag = "tags"
+
+[outputs]
+	home = ["HTML"]
+	section = ["HTML", "RSS"]
+
+[mediaTypes."application/atom+xml"]
+	suffixes = ["xml"]
+
+[outputFormats.RSS]
+	mediaType = "application/xml"
+	baseName = "rss"
+
+[markup.goldmark.renderer]
+	unsafe = true

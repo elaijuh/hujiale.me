@@ -1,0 +1,11 @@
+{
+  "name": "hugo-theme-qyl",
+  "version": "1.0.0",
+  "description": "Theme for hujiale.me",
+  "author": "hjl",
+  "license": "MIT",
+  "dependencies": {
+    "@ibm/plex": "^5.0.0",
+    "normalize.css": "^8.0.1"
+  }
+}
