@@ -1,30 +1,65 @@
-baseURL = "https://hujiale.me/"
-languageCode = "en-us"
+baseURL = "https://hujiale.me"
+languageCode = "en-US"
 title = "栖雲樓"
-theme = "qyl"
-googleAnalytics = "UA-57201547-1"
+theme = "etch"
+# googleAnalytics = "UA-57201547-1"
+googleAnalytics = "G-Q50DZDP25S"
+
 paginate = 100
+enableInlineShortcodes = true
+pygmentsCodeFences = true
+pygmentsUseClasses = true
+enableGitInfo = true
+enableEmoji = true
 
-[permalinks]
-	blog = "/blog/:year/:slug/"
+# [permalinks]
+# 	blog = "/blog/:year/:slug/"
 
-[author]
-	name = "栖雲樓主"
-  email = "hjiale@gmail.com"
+# [author]
+# 	name = "栖雲樓主"
+#   email = "hjiale@gmail.com"
+
+
+# [outputs]
+# 	home = ["HTML"]
+# 	section = ["HTML", "RSS"]
+
+# [mediaTypes."application/atom+xml"]
+# 	suffixes = ["xml"]
+
+# [outputFormats.RSS]
+# 	mediaType = "application/xml"
+# 	baseName = "rss"
 
 [taxonomies]
+  category = "categories"
 	tag = "tags"
 
-[outputs]
-	home = ["HTML"]
-	section = ["HTML", "RSS"]
+[params]
+  description = "栖雲樓"
+  copyright = "Copyright © 2022 hjl"
+  dark = "auto"
+  highlight = true
+  favicon = "/images/favicon.ico"
 
-[mediaTypes."application/atom+xml"]
-	suffixes = ["xml"]
+[menu]
+  [[menu.main]]
+    identifier = "posts"
+    name = "posts"
+    title = "posts"
+    url = "/"
+    weight = 10
 
-[outputFormats.RSS]
-	mediaType = "application/xml"
-	baseName = "rss"
+  [[menu.main]]
+    identifier = "me"
+    name = "me"
+    title = "me"
+    url = "/me/"
+    weight = 20
+
+[permalinks]
+  posts = "/:title/"
 
 [markup.goldmark.renderer]
-	unsafe = true
+  # Allows HTML in Markdown
+  unsafe = true
