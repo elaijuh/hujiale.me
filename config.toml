@@ -35,6 +35,9 @@ enableEmoji = true
   category = "categories"
 	tag = "tags"
 
+[frontmatter]
+  lastmod = [':git', ':fileModTime']
+
 [params]
   description = "栖雲樓"
   copyright = "Copyright © 2022 hjl"
