@@ -1,0 +1,57 @@
+<!doctype html><html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="栖雲樓">
+<link rel="shortcut icon" href=https://hujiale.me/favicon.ico>
+<link rel=stylesheet href=/css/style.min.css>
+<title>Install Youcompleteme with pathogen in neovim</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q50DZDP25S"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-Q50DZDP25S',{anonymize_ip:!1})}</script>
+</head>
+<body><header id=banner>
+<h2><a href=https://hujiale.me>栖雲樓</a></h2>
+<nav>
+<ul>
+<li>
+<a href=/ title=posts>posts</a>
+</li><li>
+<a href=/me/ title=me>me</a>
+</li>
+</ul>
+</nav>
+</header>
+<main id=content>
+<article>
+<header id=post-header>
+<h1>Install Youcompleteme with pathogen in neovim</h1>
+<div>
+Updated <time>January 10, 2022</time>
+</div>
+</header><p>Notes for installing YCM with pathogen, Mac environment.</p>
+<p>Prerequisites:</p>
+<ul>
+<li>brew</li>
+<li>cmake</li>
+<li>python3/python2 (here i use python3)</li>
+</ul>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>
+<span class=c1># 1. Install neovim</span>
+brew install neovim
+
+<span class=c1># 2. Install neovim python provider</span>
+<span class=c1># https://neovim.io/doc/user/provider.html#provider-python</span>
+pip3 install --upgrade neovim
+
+<span class=c1># 3. Install YouCompleteMe</span>
+<span class=nb>cd</span> ~/.vim/bundle
+git clone https://github.com/Valloric/YouCompleteMe.git <span class=o>&amp;&amp;</span> <span class=nb>cd</span> <span class=nv>$_</span>
+git submodule update --init --recursive
+<span class=c1># here i use system clang rather than downloading, and i only need c family, golang, javascript, rust completer</span>
+python3 install.py  --system-libclang --clang-completer --go-completer --js-completer --rust-completer
+
+</code></pre></div></article>
+</main><footer id=footer>
+Copyright © 2022 hjl
+</footer>
+</body>
+</html>

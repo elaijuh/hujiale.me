@@ -1,0 +1,156 @@
+<!doctype html><html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="栖雲樓">
+<link rel="shortcut icon" href=https://hujiale.me/favicon.ico>
+<link rel=stylesheet href=/css/style.min.css>
+<title>Scope, the most important thing in JavaScript</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q50DZDP25S"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-Q50DZDP25S',{anonymize_ip:!1})}</script>
+</head>
+<body><header id=banner>
+<h2><a href=https://hujiale.me>栖雲樓</a></h2>
+<nav>
+<ul>
+<li>
+<a href=/ title=posts>posts</a>
+</li><li>
+<a href=/me/ title=me>me</a>
+</li>
+</ul>
+</nav>
+</header>
+<main id=content>
+<article>
+<header id=post-header>
+<h1>Scope, the most important thing in JavaScript</h1>
+<div>
+Updated <time>January 10, 2022</time>
+</div>
+</header><p>cope and scope chain, the most important mechanism in JavaScript, are barely clearly explained though specified in ECMA-262 version 5.1. Without scope mechanism, there wouldn&rsquo;t be closure and functional programming. This post is aim to elaborate what happens behind from the very beginning when control enters the global code to execution end.</p>
+<p><span class=more></span></p>
+<p>Firstly, for easy literal, let&rsquo;s agree on the following abbreviation:
+<code>GE</code>: Global Environment
+<code>VE</code>: Variable Environment
+<code>LE</code>: Lexical Environment
+<code>OLE</code>: Outer Lexcial Environment Reference
+<code>ER</code>: Environment Record
+<code>EC</code>: Execution Context
+<code>go</code>: global object (window for browser, global for NodeJS)</p>
+<p>Take following <strong>foo.js</strong> as example, let&rsquo;s dive into it line by line</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=c1>// foo.js
+</span><span class=c1></span><span class=kd>var</span> <span class=nx>a</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+<span class=kd>function</span> <span class=nx>Foo</span><span class=p>(</span><span class=nx>b</span><span class=p>)</span> <span class=p>{</span>
+	<span class=nx>b</span> <span class=o>=</span> <span class=mi>3</span><span class=p>;</span>
+	<span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>b</span><span class=p>);</span> <span class=c1>// 3
+</span><span class=c1></span>	<span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>a</span><span class=p>);</span> <span class=c1>// 1
+</span><span class=c1></span><span class=p>}</span>
+<span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>a</span><span class=p>);</span>
+<span class=nx>Foo</span><span class=p>(</span><span class=mi>2</span><span class=p>);</span>
+</code></pre></div><ul>
+<li>Step 1: Control enters into global code
+Every javascript file is executed from global code, when the control enters into the global code (before executing the code ), a global EC will be created and push into the EC stack. <code>this</code> is set to <code>go</code>. <code>VE</code> is set to <code>GE</code> and associated with global <code>EC</code>. <code>LE</code> is set to <code>GE</code> and associated with global <code>EC</code>. <code>GE</code> is a javascript internal object which contains <code>ER</code>(bind with <code>go</code>) and <code>OLE</code>(initialized to null). So at this stage, the global <code>EC</code> looks like:</li>
+</ul>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=c1>// step 1
+</span><span class=c1></span><span class=nx>GlobalEC</span><span class=o>:</span> <span class=p>{</span>
+	<span class=nx>VE</span><span class=o>:</span> <span class=p>{</span> 
+		<span class=nx>ER</span><span class=o>:</span> <span class=p>{</span> <span class=nb>window</span><span class=o>:</span> <span class=nx>go</span> <span class=p>}</span>
+		<span class=nx>OLE</span><span class=o>:</span> <span class=kc>null</span>
+	<span class=p>},</span>
+	<span class=nx>LE</span><span class=o>:</span> <span class=p>{</span>
+		<span class=nx>ER</span><span class=o>:</span> <span class=p>{</span> <span class=nb>window</span><span class=o>:</span> <span class=nx>go</span> <span class=p>}</span>
+		<span class=nx>OLE</span><span class=o>:</span> <span class=kc>null</span>
+	<span class=p>}</span>
+	<span class=k>this</span><span class=o>:</span> <span class=nb>window</span>
+<span class=p>}</span>
+</code></pre></div><ul>
+<li>Step 2: Declaration Binding Instantiation for global EC
+After the execution context is created, control will scan the code (not execution) and bind each function declaration and variable declaration. At this stage, <code>VE</code> and <code>LE</code> will be augmented the same way, ie. <code>VE</code> is same as <code>LE</code>. So the global EC looks like:</li>
+</ul>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=c1>// step 2
+</span><span class=c1></span><span class=nx>GlobalEC</span><span class=o>:</span> <span class=p>{</span>
+	<span class=nx>VE</span><span class=o>:</span> <span class=p>{</span> 
+		<span class=nx>ER</span><span class=o>:</span> <span class=p>{</span> <span class=nb>window</span><span class=o>:</span> <span class=nx>go</span><span class=p>,</span> <span class=nx>a</span><span class=o>:</span> <span class=kc>undefined</span><span class=p>,</span> <span class=nx>Foo</span><span class=o>:</span> <span class=nx>foo</span> <span class=p>}</span>
+		<span class=nx>OLE</span><span class=o>:</span> <span class=kc>null</span>
+	<span class=p>},</span>
+	<span class=nx>LE</span><span class=o>:</span> <span class=p>{</span>
+		<span class=nx>ER</span><span class=o>:</span> <span class=p>{</span> <span class=nb>window</span><span class=o>:</span> <span class=nx>go</span><span class=p>,</span> <span class=nx>a</span><span class=o>:</span> <span class=kc>undefined</span><span class=p>,</span> <span class=nx>Foo</span><span class=o>:</span> <span class=nx>foo</span> <span class=p>}</span>
+		<span class=nx>OLE</span><span class=o>:</span> <span class=kc>null</span>
+	<span class=p>}</span>
+	<span class=k>this</span><span class=o>:</span> <span class=nb>window</span>
+<span class=p>}</span>
+</code></pre></div><p>The tricky part is when control scans to <code>Foo</code>&rsquo;s function declaration, it will create a new function object <code>foo</code> and associate it with <code>Foo</code>. The common internal properties and special internal properties for function will be assigned to <code>foo</code>. One of these internal properties is <code>[[scope]]</code>, from here the scope chain mechanism starts. <code>foo.[[scope]]</code> is set to current <code>EC.LE</code></p>
+<ul>
+<li>Step 3: Executing the global code
+After the control finishes scanning the code in step 2, it starts to run the code line by line. During the execution, <code>LE</code> will be updated with the value bound to the variable in <code>ER</code>, but <code>VE</code> remains unchanged. And remember <code>foo.[[scope]]</code> is set to <code>LE</code> by reference, so it will be updated accordingly. So before the control enters <code>Foo</code>&rsquo;s code by calling <code>Foo()</code>, the <code>GlobalEC</code> looks like:</li>
+</ul>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=c1>// step 3
+</span><span class=c1></span><span class=nx>GlobalEC</span><span class=o>:</span> <span class=p>{</span>
+	<span class=nx>VE</span><span class=o>:</span> <span class=p>{</span> 
+		<span class=nx>ER</span><span class=o>:</span> <span class=p>{</span> <span class=nb>window</span><span class=o>:</span> <span class=nx>go</span><span class=p>,</span> <span class=nx>a</span><span class=o>:</span> <span class=kc>undefined</span><span class=p>,</span> <span class=nx>Foo</span><span class=o>:</span> <span class=nx>foo</span> <span class=p>}</span>
+		<span class=nx>OLE</span><span class=o>:</span> <span class=kc>null</span>
+	<span class=p>},</span>
+	<span class=nx>LE</span><span class=o>:</span> <span class=p>{</span>
+		<span class=nx>ER</span><span class=o>:</span> <span class=p>{</span> <span class=nb>window</span><span class=o>:</span> <span class=nx>go</span><span class=p>,</span> <span class=nx>a</span><span class=o>:</span> <span class=mi>1</span><span class=p>,</span> <span class=nx>Foo</span><span class=o>:</span> <span class=nx>foo</span> <span class=p>}</span>
+		<span class=nx>OLE</span><span class=o>:</span> <span class=kc>null</span>
+	<span class=p>}</span>
+	<span class=k>this</span><span class=o>:</span> <span class=nb>window</span>
+<span class=p>}</span>
+</code></pre></div><ul>
+<li>Step 4: Control enters into Foo&rsquo;s code
+By calling <code>Foo()</code>, the control enters Foo&rsquo;s code. Much like the control enters into global code, it will create a <code>EC</code> for <code>Foo</code> and push it into the EC stack on the top of global EC. Then it will create <code>VE</code> and <code>LE</code> with a null <code>ER</code> associated. The tricky difference is <code>OLE</code> is set to <code>foo.[[scope]]</code> which is global <code>EC.LE</code>. The scope chain is established right from here. At this stage, <code>FooEC</code> looks like:</li>
+</ul>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=c1>// step 4
+</span><span class=c1></span><span class=nx>FooEC</span><span class=o>:</span> <span class=p>{</span>
+	<span class=nx>VE</span><span class=o>:</span> <span class=p>{</span> 
+		<span class=nx>ER</span><span class=o>:</span> <span class=kc>null</span>
+		<span class=nx>OLE</span><span class=o>:</span> <span class=nx>foo</span><span class=p>.[[</span><span class=nx>scope</span><span class=p>]]</span> <span class=c1>// GlobalEC.LE
+</span><span class=c1></span>	<span class=p>},</span>
+	<span class=nx>LE</span><span class=o>:</span> <span class=p>{</span>
+		<span class=nx>ER</span><span class=o>:</span> <span class=kc>null</span>
+		<span class=nx>OLE</span><span class=o>:</span> <span class=nx>foo</span><span class=p>.[[</span><span class=nx>scope</span><span class=p>]]</span> <span class=c1>// GlobalEC.LE
+</span><span class=c1></span>	<span class=p>}</span>
+	<span class=k>this</span><span class=o>:</span> <span class=nb>window</span>
+<span class=p>}</span>
+</code></pre></div><ul>
+<li>Step 5: Declaration Binding Instantiation for Foo EC
+Like it does in global code, the control will scan the function body before executing it, to bind the function declaration and variable declaration into <code>ER</code>. Additionally for function code, the formal parameters will be bound to <code>ER</code>.</li>
+</ul>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=c1>// step 5
+</span><span class=c1></span><span class=nx>FooEC</span><span class=o>:</span> <span class=p>{</span>
+	<span class=nx>VE</span><span class=o>:</span> <span class=p>{</span> 
+		<span class=nx>ER</span><span class=o>:</span> <span class=p>{</span><span class=nx>b</span><span class=o>:</span> <span class=mi>2</span><span class=p>}</span>
+		<span class=nx>OLE</span><span class=o>:</span> <span class=nx>foo</span><span class=p>.[[</span><span class=nx>scope</span><span class=p>]]</span> <span class=c1>// GlobalEC.LE
+</span><span class=c1></span>	<span class=p>},</span>
+	<span class=nx>LE</span><span class=o>:</span> <span class=p>{</span>
+		<span class=nx>ER</span><span class=o>:</span> <span class=p>{</span><span class=nx>b</span><span class=o>:</span> <span class=mi>2</span><span class=p>}</span>
+		<span class=nx>OLE</span><span class=o>:</span> <span class=nx>foo</span><span class=p>.[[</span><span class=nx>scope</span><span class=p>]]</span> <span class=c1>// GlobalEC.LE
+</span><span class=c1></span>	<span class=p>}</span>
+	<span class=k>this</span><span class=o>:</span> <span class=nb>window</span>
+<span class=p>}</span>
+</code></pre></div><ul>
+<li>Step 6: Executing the Foo code
+After scanning the function code, the control starts to execute the function line by line. During this stage, <code>LE</code> is likely to be updated while <code>VE</code> remains unchanged.</li>
+</ul>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=c1>// step 5
+</span><span class=c1></span><span class=nx>FooEC</span><span class=o>:</span> <span class=p>{</span>
+	<span class=nx>VE</span><span class=o>:</span> <span class=p>{</span> 
+		<span class=nx>ER</span><span class=o>:</span> <span class=p>{</span><span class=nx>b</span><span class=o>:</span> <span class=mi>2</span><span class=p>}</span>
+		<span class=nx>OLE</span><span class=o>:</span> <span class=nx>foo</span><span class=p>.[[</span><span class=nx>scope</span><span class=p>]]</span> <span class=c1>// GlobalEC.LE
+</span><span class=c1></span>	<span class=p>},</span>
+	<span class=nx>LE</span><span class=o>:</span> <span class=p>{</span>
+		<span class=nx>ER</span><span class=o>:</span> <span class=p>{</span><span class=nx>b</span><span class=o>:</span> <span class=mi>3</span><span class=p>}</span>
+		<span class=nx>OLE</span><span class=o>:</span> <span class=nx>foo</span><span class=p>.[[</span><span class=nx>scope</span><span class=p>]]</span> <span class=c1>// GlobalEC.LE
+</span><span class=c1></span>	<span class=p>}</span>
+	<span class=k>this</span><span class=o>:</span> <span class=nb>window</span>
+<span class=p>}</span>
+</code></pre></div><p>When control comes to <code>console.log(b)</code>, it will first find the variable <code>b</code> in <code>LE.ER</code> and value 3 is retrieved. When control comes to <code>console.log(a)</code>, it will first try to find the variable <code>a</code> in <code>LE.ER</code>. Unluckily , this time there is no <code>a</code> to be found, the control keeps finding <code>a</code> in <code>LE.OLE</code> which is <code>GlobalEC.LE</code>, finally <code>a</code> is found in <code>GlobalEC.LE.ER</code> with value bound to 1.</p>
+<hr>
+<p><a href=http://www.ecma-international.org/ecma-262/5.1/#sec-13.2>ecma-262 5.1 sec-13.2</a></p>
+<p><a href=http://www.ecma-international.org/ecma-262/5.1/#sec-10.4.3>ecma-262 5.1 sec-10.4.3</a></p>
+</article>
+</main><footer id=footer>
+Copyright © 2022 hjl
+</footer>
+</body>
+</html>

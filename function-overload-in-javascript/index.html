@@ -1,0 +1,88 @@
+<!doctype html><html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="栖雲樓">
+<link rel="shortcut icon" href=https://hujiale.me/favicon.ico>
+<link rel=stylesheet href=/css/style.min.css>
+<title>Function overload in JavaScript</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q50DZDP25S"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-Q50DZDP25S',{anonymize_ip:!1})}</script>
+</head>
+<body><header id=banner>
+<h2><a href=https://hujiale.me>栖雲樓</a></h2>
+<nav>
+<ul>
+<li>
+<a href=/ title=posts>posts</a>
+</li><li>
+<a href=/me/ title=me>me</a>
+</li>
+</ul>
+</nav>
+</header>
+<main id=content>
+<article>
+<header id=post-header>
+<h1>Function overload in JavaScript</h1>
+<div>
+Updated <time>January 10, 2022</time>
+</div>
+</header><p>As we know, Javscript has no function overload in nature. If you try to declare the same function with different signature, the previous one will be overwritten rather than overloaded. As function overload in most OO programming languages are by means of parameters, it operates on different logic according to the passed in parameters. So there is still a way to do function overload in JS.</p>
+<p><span class=more></span></p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=kd>var</span> <span class=nx>foo</span> <span class=o>=</span> <span class=p>{</span>
+    <span class=nx>bar</span><span class=o>:</span> <span class=kd>function</span> <span class=p>()</span> <span class=p>{</span>
+        <span class=k>switch</span> <span class=p>(</span><span class=nx>arguments</span><span class=p>.</span><span class=nx>length</span><span class=p>)</span> <span class=p>{</span>
+            <span class=k>case</span> <span class=mi>0</span><span class=o>:</span>
+                <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+                <span class=k>break</span><span class=p>;</span>
+            <span class=k>case</span> <span class=mi>1</span><span class=o>:</span>
+                <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>arguments</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span>
+                <span class=k>break</span><span class=p>;</span>
+            <span class=k>case</span> <span class=mi>2</span><span class=o>:</span>
+                <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>arguments</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>+</span> <span class=nx>arguments</span><span class=p>[</span><span class=mi>1</span><span class=p>]);</span>
+                <span class=k>break</span><span class=p>;</span>
+        <span class=p>}</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+
+<span class=nx>foo</span><span class=p>.</span><span class=nx>bar</span><span class=p>();</span> <span class=c1>// 0
+</span><span class=c1></span><span class=nx>foo</span><span class=p>.</span><span class=nx>bar</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span> <span class=c1>// 1
+</span><span class=c1></span><span class=nx>foo</span><span class=p>.</span><span class=nx>bar</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>);</span> <span class=c1>// 3
+</span></code></pre></div><p>This approach is workable but not tidy and flexiable. With more and more overloads, the switch block becomes longer and longer scaring away developers.</p>
+<p>With <code>function.length</code> and <code>closure</code>, we could implement the same in a neat and ninja way.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=kd>var</span> <span class=nx>foo</span> <span class=o>=</span> <span class=p>{</span>
+    <span class=nx>overloadMethod</span><span class=o>:</span> <span class=kd>function</span> <span class=p>(</span><span class=nx>name</span><span class=p>,</span> <span class=nx>fn</span><span class=p>)</span> <span class=p>{</span>
+        <span class=kd>var</span> <span class=nx>baseFn</span> <span class=o>=</span> <span class=k>this</span><span class=p>[</span><span class=nx>name</span><span class=p>];</span>
+        <span class=k>this</span><span class=p>[</span><span class=nx>name</span><span class=p>]</span> <span class=o>=</span> <span class=kd>function</span> <span class=p>()</span> <span class=p>{</span>
+            <span class=k>if</span> <span class=p>(</span><span class=nx>fn</span><span class=p>.</span><span class=nx>length</span> <span class=o>===</span> <span class=nx>arguments</span><span class=p>.</span><span class=nx>length</span><span class=p>)</span> <span class=p>{</span>
+                <span class=k>return</span> <span class=nx>fn</span><span class=p>.</span><span class=nx>apply</span><span class=p>(</span><span class=k>this</span><span class=p>,</span> <span class=nx>arguments</span><span class=p>);</span>
+            <span class=p>}</span> <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=k>typeof</span> <span class=nx>baseFn</span> <span class=o>===</span> <span class=s1>&#39;function&#39;</span><span class=p>)</span> <span class=p>{</span>
+                <span class=k>return</span> <span class=nx>baseFn</span><span class=p>.</span><span class=nx>apply</span><span class=p>(</span><span class=k>this</span><span class=p>,</span> <span class=nx>arguments</span><span class=p>);</span> <span class=c1>// baseFn is in a closure
+</span><span class=c1></span>            <span class=p>}</span>
+        <span class=p>};</span>
+    <span class=p>}</span>
+<span class=p>};</span>
+
+<span class=nx>foo</span><span class=p>.</span><span class=nx>overloadMethod</span><span class=p>(</span><span class=s1>&#39;bar&#39;</span><span class=p>,</span> <span class=kd>function</span><span class=p>()</span> <span class=p>{</span>
+    <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+<span class=p>})</span>
+<span class=nx>foo</span><span class=p>.</span><span class=nx>overloadMethod</span><span class=p>(</span><span class=s1>&#39;bar&#39;</span><span class=p>,</span> <span class=kd>function</span><span class=p>(</span><span class=nx>x</span><span class=p>)</span> <span class=p>{</span>
+    <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>x</span><span class=p>);</span>
+<span class=p>})</span>
+<span class=nx>foo</span><span class=p>.</span><span class=nx>overloadMethod</span><span class=p>(</span><span class=s1>&#39;bar&#39;</span><span class=p>,</span> <span class=kd>function</span><span class=p>(</span><span class=nx>x</span><span class=p>,</span> <span class=nx>y</span><span class=p>)</span> <span class=p>{</span>
+    <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>x</span> <span class=o>+</span> <span class=nx>y</span><span class=p>);</span>
+<span class=p>})</span>
+
+
+<span class=nx>foo</span><span class=p>.</span><span class=nx>bar</span><span class=p>();</span> <span class=c1>// 0
+</span><span class=c1></span><span class=nx>foo</span><span class=p>.</span><span class=nx>bar</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span> <span class=c1>// 1
+</span><span class=c1></span><span class=nx>foo</span><span class=p>.</span><span class=nx>bar</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>);</span> <span class=c1>// 3
+</span></code></pre></div><p>So everytime you want to overload the method, just call <code>foo.overloadMethod</code> with the method name and anonymous function passed in. It looks like <code>foo.bar</code> is overwritten again and again, but actually every single version of <code>foo.bar</code> is completely kept in closure to be referenced.</p>
+<hr>
+<p>Reference book: <a href="http://www.amazon.com/Secrets-JavaScript-Ninja-John-Resig/dp/193398869X/ref=sr_1_1?ie=UTF8&qid=1417626477&sr=8-1&keywords=secrets+of+javascript+ninja">Secrets of the JavaScript Ninja</a>, <a href=http://ejohn.org/>John Resig</a></p>
+</article>
+</main><footer id=footer>
+Copyright © 2022 hjl
+</footer>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!doctype html><html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="栖雲樓">
+<link rel="shortcut icon" href=https://hujiale.me/favicon.ico>
+<link rel=stylesheet href=/css/style.min.css>
+<title>How to make ngrx/store work with HMR</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q50DZDP25S"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-Q50DZDP25S',{anonymize_ip:!1})}</script>
+</head>
+<body><header id=banner>
+<h2><a href=https://hujiale.me>栖雲樓</a></h2>
+<nav>
+<ul>
+<li>
+<a href=/ title=posts>posts</a>
+</li><li>
+<a href=/me/ title=me>me</a>
+</li>
+</ul>
+</nav>
+</header>
+<main id=content>
+<article>
+<header id=post-header>
+<h1>How to make ngrx/store work with HMR</h1>
+<div>
+Updated <time>January 10, 2022</time>
+</div>
+</header><p>In my previous post, I talked of a way to develop angular 2 app with HMR.
+The vendors I use are <em>@angularclass/hmr</em> and <em>@angularclass/hmr-loader</em>
+Later on, I thought I might need a data flow tool like redux to manage my app state and I found <a href=https://github.com/ngrx/store>ngrx/store</a></p>
+<p>@angularclass/hmr injects some <em>hmr</em> prefix life cycles into the main module to let you to restore the data.
+But app state management is optional and you can choose your own way to implement it, so I will walk you through how I implement HMR with ngrx/store</p>
+<h3 id=retrieve-the-current-state>Retrieve the current state</h3>
+<p>To retrive the current app state before it&rsquo;s deposed is easy, just subscribe it:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=k>this</span><span class=p>.</span><span class=nx>_store</span><span class=p>.</span><span class=nx>take</span><span class=p>(</span><span class=mi>1</span><span class=p>).</span><span class=nx>subscribe</span><span class=p>(</span><span class=nx>s</span> <span class=p>=&gt;</span> <span class=nx>store</span><span class=p>.</span><span class=nx>rootState</span> <span class=o>=</span> <span class=nx>s</span><span class=p>)</span>
+</code></pre></div><p>That&rsquo;s it</p>
+<h3 id=restore-the-current-state>Restore the current state</h3>
+<p>This is kinda cumbesome as <code>ngrx/store</code> doesn&rsquo;t provide a way to set the root state, I need to compose a rootReducer to do this.
+With the help of <a href=https://github.com/MikeRyan52>Mike Ryan</a>, I figure out a way to do that.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=kd>function</span> <span class=nx>stateSetter</span><span class=p>(</span><span class=nx>reducer</span><span class=o>:</span> <span class=nx>ActionReducer</span><span class=o>&lt;</span><span class=nx>any</span><span class=o>&gt;</span><span class=p>)</span><span class=o>:</span> <span class=nx>ActionReducer</span><span class=o>&lt;</span><span class=nx>any</span><span class=o>&gt;</span> <span class=p>{</span>
+  <span class=k>return</span> <span class=kd>function</span> <span class=p>(</span><span class=nx>state</span><span class=p>,</span> <span class=nx>action</span> <span class=p>)</span> <span class=p>{</span>
+    <span class=k>if</span> <span class=p>(</span><span class=nx>action</span><span class=p>.</span><span class=nx>type</span> <span class=o>===</span> <span class=s1>&#39;SET_ROOT_STATE&#39;</span><span class=p>)</span> <span class=p>{</span>
+      <span class=k>return</span> <span class=nx>action</span><span class=p>.</span><span class=nx>payload</span>
+    <span class=p>}</span>
+    <span class=k>return</span> <span class=nx>reducer</span><span class=p>(</span><span class=nx>state</span><span class=p>,</span> <span class=nx>action</span><span class=p>)</span>
+  <span class=p>}</span>
+<span class=p>}</span>
+
+<span class=kr>const</span> <span class=nx>rootReducer</span> <span class=o>=</span> <span class=nx>compose</span><span class=p>(</span><span class=nx>stateSetter</span><span class=p>,</span> <span class=nx>combineReducers</span><span class=p>)({</span>
+    <span class=c1>// your reducers here
+</span><span class=c1></span><span class=p>})</span>
+</code></pre></div><p>Now I can dispatch a <code>SET_ROOT_STATE</code> action to reset the app state to what I have stored</p>
+<h3 id=get-everything-together>Get everything together</h3>
+<p>This is very much based on <a href=https://github.com/mgechev/angular2-seed>angular2-seed</a>, you might have your own <code>main.ts</code> though</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-js data-lang=js><span class=kr>import</span> <span class=p>{</span> <span class=nx>platformBrowserDynamic</span> <span class=p>}</span> <span class=nx>from</span> <span class=s1>&#39;@angular/platform-browser-dynamic&#39;</span>
+<span class=kr>import</span> <span class=p>{</span> <span class=nx>BrowserModule</span> <span class=p>}</span> <span class=nx>from</span> <span class=s1>&#39;@angular/platform-browser&#39;</span>
+<span class=kr>import</span> <span class=p>{</span> <span class=nx>RouterModule</span> <span class=p>}</span> <span class=nx>from</span> <span class=s1>&#39;@angular/router&#39;</span>
+<span class=kr>import</span> <span class=p>{</span> <span class=nx>NgModule</span><span class=p>,</span> <span class=nx>ApplicationRef</span> <span class=p>}</span> <span class=nx>from</span> <span class=s1>&#39;@angular/core&#39;</span>
+<span class=kr>import</span> <span class=p>{</span> <span class=nx>removeNgStyles</span><span class=p>,</span> <span class=nx>createNewHosts</span><span class=p>,</span> <span class=nx>createInputTransfer</span><span class=p>,</span> <span class=nx>bootloader</span> <span class=p>}</span> <span class=nx>from</span> <span class=s1>&#39;@angularclass/hmr&#39;</span>
+
+<span class=kr>import</span> <span class=p>{</span> <span class=nx>compose</span><span class=p>}</span> <span class=nx>from</span> <span class=s1>&#39;@ngrx/core/compose&#39;</span>
+<span class=kr>import</span> <span class=p>{</span> <span class=nx>Store</span><span class=p>,</span> <span class=nx>StoreModule</span><span class=p>,</span> <span class=nx>ActionReducer</span><span class=p>,</span> <span class=nx>combineReducers</span> <span class=p>}</span> <span class=nx>from</span> <span class=s1>&#39;@ngrx/store&#39;</span>
+<span class=kr>import</span> <span class=p>{</span> <span class=nx>StoreDevtoolsModule</span> <span class=p>}</span> <span class=nx>from</span> <span class=s1>&#39;@ngrx/store-devtools&#39;</span>
+<span class=kr>import</span> <span class=p>{</span> <span class=nx>StoreLogMonitorModule</span><span class=p>,</span> <span class=nx>useLogMonitor</span> <span class=p>}</span> <span class=nx>from</span> <span class=s1>&#39;@ngrx/store-log-monitor&#39;</span>
+
+<span class=kr>import</span> <span class=p>{</span> <span class=nx>AppModule</span> <span class=p>}</span> <span class=nx>from</span> <span class=s1>&#39;./app&#39;</span>
+<span class=kr>import</span> <span class=p>{</span> <span class=nx>AppComponent</span> <span class=p>}</span> <span class=nx>from</span> <span class=s1>&#39;./app/app.component&#39;</span>
+<span class=kr>import</span> <span class=p>{</span> <span class=nx>message</span> <span class=p>}</span> <span class=nx>from</span> <span class=s1>&#39;./reducer&#39;</span>
+
+
+<span class=c1>// Generate a reducer to set the root state
+</span><span class=c1></span><span class=kd>function</span> <span class=nx>stateSetter</span><span class=p>(</span><span class=nx>reducer</span><span class=o>:</span> <span class=nx>ActionReducer</span><span class=o>&lt;</span><span class=nx>any</span><span class=o>&gt;</span><span class=p>)</span><span class=o>:</span> <span class=nx>ActionReducer</span><span class=o>&lt;</span><span class=nx>any</span><span class=o>&gt;</span> <span class=p>{</span>
+  <span class=k>return</span> <span class=kd>function</span> <span class=p>(</span><span class=nx>state</span><span class=p>,</span> <span class=nx>action</span> <span class=p>)</span> <span class=p>{</span>
+    <span class=k>if</span> <span class=p>(</span><span class=nx>action</span><span class=p>.</span><span class=nx>type</span> <span class=o>===</span> <span class=s1>&#39;SET_ROOT_STATE&#39;</span><span class=p>)</span> <span class=p>{</span>
+      <span class=k>return</span> <span class=nx>action</span><span class=p>.</span><span class=nx>payload</span>
+    <span class=p>}</span>
+    <span class=k>return</span> <span class=nx>reducer</span><span class=p>(</span><span class=nx>state</span><span class=p>,</span> <span class=nx>action</span><span class=p>)</span>
+  <span class=p>}</span>
+<span class=p>}</span>
+
+<span class=kr>const</span> <span class=nx>rootReducer</span> <span class=o>=</span> <span class=nx>compose</span><span class=p>(</span><span class=nx>stateSetter</span><span class=p>,</span> <span class=nx>combineReducers</span><span class=p>)({</span>
+  <span class=nx>message</span>
+<span class=p>})</span>
+
+<span class=kd>let</span> <span class=nx>imports</span> <span class=o>=</span> <span class=p>[</span>
+  <span class=nx>BrowserModule</span><span class=p>,</span>
+  <span class=nx>RouterModule</span><span class=p>.</span><span class=nx>forRoot</span><span class=p>([],</span> <span class=p>{</span>
+    <span class=nx>useHash</span><span class=o>:</span> <span class=kc>true</span>
+  <span class=p>}),</span>
+  <span class=c1>// app
+</span><span class=c1></span>  <span class=nx>AppModule</span><span class=p>,</span>
+  <span class=c1>// vendors
+</span><span class=c1></span>  <span class=nx>StoreModule</span><span class=p>.</span><span class=nx>provideStore</span><span class=p>(</span><span class=nx>rootReducer</span><span class=p>)</span>
+<span class=p>]</span>
+
+<span class=c1>// Enable HMR and ngrx/devtools in hot reload mode
+</span><span class=c1></span><span class=k>if</span> <span class=p>(</span><span class=nx>module</span><span class=p>.</span><span class=nx>hot</span><span class=p>)</span> <span class=nx>imports</span><span class=p>.</span><span class=nx>push</span><span class=p>(...[</span>
+    <span class=nx>StoreDevtoolsModule</span><span class=p>.</span><span class=nx>instrumentStore</span><span class=p>({</span>
+      <span class=nx>monitor</span><span class=o>:</span> <span class=nx>useLogMonitor</span><span class=p>({</span>
+        <span class=nx>visible</span><span class=o>:</span> <span class=kc>true</span><span class=p>,</span>
+        <span class=nx>position</span><span class=o>:</span> <span class=s1>&#39;right&#39;</span>
+      <span class=p>})</span>
+    <span class=p>}),</span>
+    <span class=nx>StoreLogMonitorModule</span><span class=p>,</span>
+<span class=p>])</span>
+
+<span class=err>@</span><span class=nx>NgModule</span><span class=p>({</span>
+  <span class=nx>bootstrap</span><span class=o>:</span> <span class=p>[</span> <span class=nx>AppComponent</span> <span class=p>],</span>
+  <span class=nx>declarations</span><span class=o>:</span> <span class=p>[</span> <span class=nx>AppComponent</span> <span class=p>],</span>
+  <span class=nx>imports</span>
+<span class=p>})</span>
+<span class=kr>class</span> <span class=nx>MainModule</span> <span class=p>{</span>
+  <span class=nx>constructor</span><span class=p>(</span><span class=kr>public</span> <span class=nx>appRef</span><span class=o>:</span> <span class=nx>ApplicationRef</span><span class=p>,</span> <span class=kr>private</span> <span class=nx>_store</span><span class=o>:</span> <span class=nx>Store</span><span class=o>&lt;</span><span class=nx>any</span><span class=o>&gt;</span> <span class=p>)</span> <span class=p>{}</span>
+  <span class=nx>hmrOnInit</span><span class=p>(</span><span class=nx>store</span><span class=p>)</span> <span class=p>{</span>
+    <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=nx>store</span> <span class=o>||</span> <span class=o>!</span><span class=nx>store</span><span class=p>.</span><span class=nx>rootState</span><span class=p>)</span> <span class=k>return</span>
+
+    <span class=c1>// restore state by dispatch a SET_ROOT_STATE action
+</span><span class=c1></span>    <span class=k>if</span> <span class=p>(</span><span class=nx>store</span><span class=p>.</span><span class=nx>rootState</span><span class=p>)</span> <span class=p>{</span>
+      <span class=k>this</span><span class=p>.</span><span class=nx>_store</span><span class=p>.</span><span class=nx>dispatch</span><span class=p>({</span>
+        <span class=nx>type</span><span class=o>:</span> <span class=s1>&#39;SET_ROOT_STATE&#39;</span><span class=p>,</span>
+        <span class=nx>payload</span><span class=o>:</span> <span class=nx>store</span><span class=p>.</span><span class=nx>rootState</span>
+      <span class=p>})</span>
+    <span class=p>}</span>
+
+    <span class=k>if</span> <span class=p>(</span><span class=s1>&#39;restoreInputValues&#39;</span> <span class=k>in</span> <span class=nx>store</span><span class=p>)</span> <span class=p>{</span> <span class=nx>store</span><span class=p>.</span><span class=nx>restoreInputValues</span><span class=p>()</span> <span class=p>}</span>
+    <span class=k>this</span><span class=p>.</span><span class=nx>appRef</span><span class=p>.</span><span class=nx>tick</span><span class=p>()</span>
+    <span class=nb>Object</span><span class=p>.</span><span class=nx>keys</span><span class=p>(</span><span class=nx>store</span><span class=p>).</span><span class=nx>forEach</span><span class=p>(</span><span class=nx>prop</span> <span class=p>=&gt;</span> <span class=k>delete</span> <span class=nx>store</span><span class=p>[</span><span class=nx>prop</span><span class=p>])</span>
+  <span class=p>}</span>
+  <span class=nx>hmrOnDestroy</span><span class=p>(</span><span class=nx>store</span><span class=p>)</span> <span class=p>{</span>
+    <span class=kr>const</span> <span class=nx>cmpLocation</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>appRef</span><span class=p>.</span><span class=nx>components</span><span class=p>.</span><span class=nx>map</span><span class=p>(</span><span class=nx>cmp</span> <span class=p>=&gt;</span> <span class=nx>cmp</span><span class=p>.</span><span class=nx>location</span><span class=p>.</span><span class=nx>nativeElement</span><span class=p>)</span>
+    <span class=k>this</span><span class=p>.</span><span class=nx>_store</span><span class=p>.</span><span class=nx>take</span><span class=p>(</span><span class=mi>1</span><span class=p>).</span><span class=nx>subscribe</span><span class=p>(</span><span class=nx>s</span> <span class=p>=&gt;</span> <span class=nx>store</span><span class=p>.</span><span class=nx>rootState</span> <span class=o>=</span> <span class=nx>s</span><span class=p>)</span>
+    <span class=nx>store</span><span class=p>.</span><span class=nx>disposeOldHosts</span> <span class=o>=</span> <span class=nx>createNewHosts</span><span class=p>(</span><span class=nx>cmpLocation</span><span class=p>)</span>
+    <span class=nx>store</span><span class=p>.</span><span class=nx>restoreInputValues</span>  <span class=o>=</span> <span class=nx>createInputTransfer</span><span class=p>()</span>
+    <span class=nx>removeNgStyles</span><span class=p>()</span>
+  <span class=p>}</span>
+  <span class=nx>hmrAfterDestroy</span><span class=p>(</span><span class=nx>store</span><span class=p>)</span> <span class=p>{</span>
+    <span class=nx>store</span><span class=p>.</span><span class=nx>disposeOldHosts</span><span class=p>()</span>
+    <span class=k>delete</span> <span class=nx>store</span><span class=p>.</span><span class=nx>disposeOldHosts</span>
+  <span class=p>}</span>
+<span class=p>}</span>
+
+<span class=kr>export</span> <span class=kd>function</span> <span class=nx>main</span><span class=p>()</span> <span class=p>{</span>
+  <span class=k>return</span> <span class=nx>platformBrowserDynamic</span><span class=p>().</span><span class=nx>bootstrapModule</span><span class=p>(</span><span class=nx>MainModule</span><span class=p>)</span>
+<span class=p>}</span>
+
+<span class=nx>bootloader</span><span class=p>(</span><span class=nx>main</span><span class=p>)</span>
+</code></pre></div><p>Now the state remains the same after you change your code with HMR on, cool right.</p>
+</article>
+</main><footer id=footer>
+Copyright © 2022 hjl
+</footer>
+</body>
+</html>

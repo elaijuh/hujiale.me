@@ -1,0 +1,39 @@
+<!doctype html><html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="栖雲樓">
+<link rel="shortcut icon" href=https://hujiale.me/favicon.ico>
+<link rel=stylesheet href=/css/style.min.css>
+<title>Get ready for FreeBSD</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q50DZDP25S"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-Q50DZDP25S',{anonymize_ip:!1})}</script>
+</head>
+<body><header id=banner>
+<h2><a href=https://hujiale.me>栖雲樓</a></h2>
+<nav>
+<ul>
+<li>
+<a href=/ title=posts>posts</a>
+</li><li>
+<a href=/me/ title=me>me</a>
+</li>
+</ul>
+</nav>
+</header>
+<main id=content>
+<article>
+<header id=post-header>
+<h1>Get ready for FreeBSD</h1>
+<div>
+Updated <time>January 10, 2022</time>
+</div>
+</header><p>I would like to install both FreeBSD and Win10 onto my old workstation. FreeBSD offical manual is quite straight forward and smooth for beginner to complete installation. It just misses some pieces for dual boot with old BIOS, here it is.</p>
+<p>I am installing version 11.1 and still using ufs with old BIOS, most parts should be compatible to the previous versions.</p>
+<p>Now when you come to <code>Partitioning</code> step, choose <code>Manual</code>, you might probably see a divice like <strong>ada0</strong> with <strong>MBR</strong> label followed by <strong>ada0s1</strong> and <strong>ada0s2</strong> with <strong>NTFS</strong> label. I have Win10 already installed first, and this is the recommended way as I want FreeBSD to rewrite MBR later. Now create a new section under ada0 and choose freebsd type. From this newly created freebse MBR, create another freebsd-ufs (the size could be the rest of the disk) and freebsd-swap (I set it 4G same as my memory size). Now when reboot, the MBR will boot FreeBSD but not Win10 any longer. No worry, one more step after login: <code>sudo boot0cfg -B ada0</code>. This allow boot select from MBR, you will see Win options there.</p>
+<p>If everything works just fine, kernel will load drivers for hardware and it&rsquo;s good to go. <code>pkg update</code> and <code>pkg install xorg</code>, <code>pkg install xf86-video-ati</code> (my video adapter is Radeon HD 6850). OK, enjoy UNIX.</p>
+</article>
+</main><footer id=footer>
+Copyright © 2022 hjl
+</footer>
+</body>
+</html>

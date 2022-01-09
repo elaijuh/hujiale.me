@@ -1,0 +1,61 @@
+<!doctype html><html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="栖雲樓">
+<link rel="shortcut icon" href=https://hujiale.me/favicon.ico>
+<link rel=stylesheet href=/css/style.min.css>
+<title>Https for everything</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q50DZDP25S"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-Q50DZDP25S',{anonymize_ip:!1})}</script>
+</head>
+<body><header id=banner>
+<h2><a href=https://hujiale.me>栖雲樓</a></h2>
+<nav>
+<ul>
+<li>
+<a href=/ title=posts>posts</a>
+</li><li>
+<a href=/me/ title=me>me</a>
+</li>
+</ul>
+</nav>
+</header>
+<main id=content>
+<article>
+<header id=post-header>
+<h1>Https for everything</h1>
+<div>
+Updated <time>January 10, 2022</time>
+</div>
+</header><p>HTTPS is highly recommended for every web site, as a web developer I am building both my personal
+and company app under https. Applying for the certificates could be a block for you to migrate/build
+your site to https as you need to pay for it and it could take quite a while. Thanks to <a href=https://letsencrypt.org/>letsencrypt</a>
+now we can have free open certificate authorify for our sites.</p>
+<p>I will list the least steps to build a site by using <a href=https://certbot.eff.org/>certbot</a></p>
+<h4 id=install-certbot>Install certbot</h4>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>wget https://dl.eff.org/certbot-auto
+chmod a+x ./certbot-auto
+</code></pre></div><p>After that, you can run <code>./certbot-auto --help</code> to check if it&rsquo;s installed successfully.</p>
+<h4 id=use-certbot-to-generate-certificates>Use certbot to generate certificates</h4>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>./certbot-auto certonly --standalone -d www.yourdomain.com -d sub.yourdomain.com
+</code></pre></div><p>Make sure <code>www.yourdomain.com</code> and <code>sub.yourdomain.com</code> is online at <code>80</code> port as this command will
+check the validation. You can ignore <code>--standalone</code> at the moment, it&rsquo;s just a plugin
+for certbot to generated software independent certificates. After running the command, there will be 4 files generated
+at <code>/etc/letsencrypt</code>. They are <code>privKey.pem</code>, <code>fullchain.pem</code>, <code>cert.pem</code> and <code>chain.pem</code>.
+Usually the web server only needs to point to the previous two for enableing https.
+I will go through you how to point to certificates ad different server (nginx, apache) has different way.
+You can google for it by yourself</p>
+<h4 id=renew-the-certificates>Renew the certificates</h4>
+<p>The certificates are only valid for 90 days, luckily the renew is easy.</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-sh data-lang=sh>./certbot-auto renew
+</code></pre></div><p>That&rsquo;s it. If certbot check the certificates are due for renewal, it will renew them.
+I also create a daily cron task to renew it automatically.
+<code>0 0 * * * ~/certbot-auto renew</code></p>
+<hr>
+<p><a href=https://certbot.eff.org/docs/using.html#getting-certificates-and-choosing-plugins>Reference</a></p>
+</article>
+</main><footer id=footer>
+Copyright © 2022 hjl
+</footer>
+</body>
+</html>

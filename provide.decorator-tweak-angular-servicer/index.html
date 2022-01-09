@@ -1,0 +1,74 @@
+<!doctype html><html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="栖雲樓">
+<link rel="shortcut icon" href=https://hujiale.me/favicon.ico>
+<link rel=stylesheet href=/css/style.min.css>
+<title> $provide.decorator - tweak Angular servicer</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q50DZDP25S"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-Q50DZDP25S',{anonymize_ip:!1})}</script>
+</head>
+<body><header id=banner>
+<h2><a href=https://hujiale.me>栖雲樓</a></h2>
+<nav>
+<ul>
+<li>
+<a href=/ title=posts>posts</a>
+</li><li>
+<a href=/me/ title=me>me</a>
+</li>
+</ul>
+</nav>
+</header>
+<main id=content>
+<article>
+<header id=post-header>
+<h1> $provide.decorator - tweak Angular servicer</h1>
+<div>
+Updated <time>January 10, 2022</time>
+</div>
+</header><p>If you are using Angular, you can&rsquo;t avoid depending on third-party modules. Sometimes you find it not that perfect API the module provides, so that you hack into the source code and about to pull request. But the author&rsquo;s comments on your pull request, usually for popular repo, &lsquo;sorry-that&rsquo;s not our priority&rsquo; turns you down totally. Either you work around it or turns to another third-party module. Here is the third option, if you want to share the private data in service closure and provide some API for your specific need, you might find <code>$provide.decorator</code> helpful. Let&rsquo;s look at this:</p>
+<p><span class=more></span></p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=nx>angular</span>
+    <span class=p>.</span><span class=nx>module</span><span class=p>(</span><span class=s1>&#39;sortModule&#39;</span><span class=p>,</span> <span class=p>[])</span>
+    <span class=p>.</span><span class=nx>factory</span><span class=p>(</span><span class=s1>&#39;sortService&#39;</span><span class=p>,</span> <span class=kd>function</span> <span class=p>()</span> <span class=p>{</span>
+        <span class=kd>var</span> <span class=nx>list</span> <span class=o>=</span> <span class=p>[</span><span class=mi>1</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>10</span><span class=p>,</span> <span class=mi>2</span><span class=p>];</span>
+        <span class=kd>var</span> <span class=nx>service</span> <span class=o>=</span> <span class=p>{</span>
+            <span class=nx>doSort</span><span class=o>:</span> <span class=nx>doSort</span>
+        <span class=p>}</span>
+        <span class=k>return</span> <span class=nx>service</span><span class=p>;</span>
+        <span class=c1>////////////////
+</span><span class=c1></span>        <span class=kd>function</span> <span class=nx>doSort</span><span class=p>()</span> <span class=p>{</span>
+            <span class=k>return</span> <span class=nx>list</span><span class=p>.</span><span class=nx>sort</span><span class=p>().</span><span class=nx>slice</span><span class=p>();</span> <span class=c1>// [1, 10, 2, 3] default sort method compared by string
+</span><span class=c1></span>        <span class=p>}</span>
+    <span class=p>});</span>
+
+<span class=kd>var</span> <span class=nx>myApp</span> <span class=o>=</span> <span class=nx>angular</span><span class=p>.</span><span class=nx>module</span><span class=p>(</span><span class=s1>&#39;myApp&#39;</span><span class=p>,</span> <span class=p>[</span><span class=s1>&#39;sortModule&#39;</span><span class=p>]);</span>
+<span class=nx>myApp</span><span class=p>.</span><span class=nx>config</span><span class=p>(</span><span class=kd>function</span> <span class=p>(</span><span class=nx>$provide</span><span class=p>)</span> <span class=p>{</span>
+    <span class=nx>$provide</span><span class=p>.</span><span class=nx>decorator</span><span class=p>(</span><span class=s1>&#39;sortService&#39;</span><span class=p>,</span> <span class=kd>function</span> <span class=p>(</span><span class=nx>$delegate</span><span class=p>)</span> <span class=p>{</span>
+        <span class=nx>$delegate</span><span class=p>.</span><span class=nx>doCustSort</span> <span class=o>=</span> <span class=kd>function</span> <span class=p>(</span><span class=nx>fn</span><span class=p>)</span> <span class=p>{</span>
+            <span class=k>return</span> <span class=nx>list</span><span class=p>.</span><span class=nx>sort</span><span class=p>(</span><span class=nx>fn</span><span class=p>).</span><span class=nx>slice</span><span class=p>();</span> <span class=c1>// [1, 2, 3, 10] compared by number
+</span><span class=c1></span>        <span class=p>};</span>
+        
+        <span class=k>return</span> <span class=nx>$delegate</span><span class=p>;</span>
+    <span class=p>});</span>
+<span class=p>});</span>
+
+<span class=nx>myApp</span><span class=p>.</span><span class=nx>controller</span><span class=p>(</span><span class=s1>&#39;MyCtrl&#39;</span><span class=p>,</span> <span class=kd>function</span><span class=p>(</span><span class=nx>$scope</span><span class=p>,</span> <span class=nx>sortService</span><span class=p>)</span> <span class=p>{</span>
+    <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>sortService</span><span class=p>.</span><span class=nx>doSort</span><span class=p>());</span> <span class=c1>// [1, 10, 2, 3]
+</span><span class=c1></span>    <span class=kd>var</span> <span class=nx>compare</span> <span class=o>=</span> <span class=kd>function</span> <span class=p>(</span><span class=nx>a</span><span class=p>,</span> <span class=nx>b</span><span class=p>)</span> <span class=p>{</span>
+        <span class=k>if</span> <span class=p>(</span><span class=nx>a</span> <span class=o>&lt;</span> <span class=nx>b</span><span class=p>)</span> <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+        <span class=k>if</span> <span class=p>(</span><span class=nx>a</span> <span class=o>&gt;</span> <span class=nx>b</span><span class=p>)</span> <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+        <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+    <span class=p>};</span>
+    <span class=c1>// we tweaked sortService with doCustSort method
+</span><span class=c1></span>    <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>sortService</span><span class=p>.</span><span class=nx>doCustSort</span><span class=p>(</span><span class=nx>compare</span><span class=p>));</span> <span class=c1>// [1, 2, 3, 10]
+</span><span class=c1></span><span class=p>});</span>
+</code></pre></div><p>Here we add a customized sort method <code>doCustSort</code> to <code>$delegate</code> which references to the service itself. So that we can share the private <code>list</code> and do some specific logic on our need. And basically you can tweak most components in Angular as long as it&rsquo;s a <code>$provide</code>.</p>
+<p><a href="http://plnkr.co/edit/etgYtx?p=preview">Plnkr demo</a></p>
+</article>
+</main><footer id=footer>
+Copyright © 2022 hjl
+</footer>
+</body>
+</html>

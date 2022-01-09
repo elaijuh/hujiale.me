@@ -1,0 +1,45 @@
+<!doctype html><html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="栖雲樓">
+<link rel="shortcut icon" href=https://hujiale.me/favicon.ico>
+<link rel=stylesheet href=/css/style.min.css>
+<title>Angular2 HMR with backend server supported</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q50DZDP25S"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-Q50DZDP25S',{anonymize_ip:!1})}</script>
+</head>
+<body><header id=banner>
+<h2><a href=https://hujiale.me>栖雲樓</a></h2>
+<nav>
+<ul>
+<li>
+<a href=/ title=posts>posts</a>
+</li><li>
+<a href=/me/ title=me>me</a>
+</li>
+</ul>
+</nav>
+</header>
+<main id=content>
+<article>
+<header id=post-header>
+<h1>Angular2 HMR with backend server supported</h1>
+<div>
+Updated <time>January 10, 2022</time>
+</div>
+</header><p>Currenly I am developing a client + server side boilerplate with <a href=https://angular.io>Angular 2</a> and <a href=http://feathersjs.com>Feathers</a>.
+For server side, I am using <code>ts-node</code> with nodemon, so far so good. But I find it cumbesome that every time I need to bundle client side code.<br>
+After some exploring, I find a way to solve the problem. These are the dependencies:</p>
+<ul>
+<li><a href=https://github.com/AngularClass/angular2-hmr>angular2-hmr</a> a bootload wrapper on <code>bootstrapModule</code>, it&rsquo;s cleared classified how to use in github</li>
+<li><a href=https://github.com/AngularClass/angular2-hmr-loader>angular2-hmr-loader</a>, a webpack loader to work with the previous one</li>
+<li><a href=https://github.com/webpack/webpack-dev-middleware>webpack-dev-middleware</a>, just like <code>webpack-dev-server</code></li>
+<li><a href=https://github.com/glenjamin/webpack-hot-middleware>webpack-hot-middleware</a>, an <code>express</code>/<code>feather</code> middleware just like <code>webpack-dev-server</code> w/ hot</li>
+</ul>
+<p>All of their READMEs clearly walk you through, it just suprises me that few information could be connected on this while it&rsquo;s a quite general practice in <code>React</code></p>
+</article>
+</main><footer id=footer>
+Copyright © 2022 hjl
+</footer>
+</body>
+</html>

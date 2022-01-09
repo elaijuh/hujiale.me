@@ -1,0 +1,54 @@
+<!doctype html><html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="栖雲樓">
+<link rel="shortcut icon" href=https://hujiale.me/favicon.ico>
+<link rel=stylesheet href=/css/style.min.css>
+<title>Repeat a capturing group, pitfall in RegExp</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q50DZDP25S"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-Q50DZDP25S',{anonymize_ip:!1})}</script>
+</head>
+<body><header id=banner>
+<h2><a href=https://hujiale.me>栖雲樓</a></h2>
+<nav>
+<ul>
+<li>
+<a href=/ title=posts>posts</a>
+</li><li>
+<a href=/me/ title=me>me</a>
+</li>
+</ul>
+</nav>
+</header>
+<main id=content>
+<article>
+<header id=post-header>
+<h1>Repeat a capturing group, pitfall in RegExp</h1>
+<div>
+Updated <time>January 10, 2022</time>
+</div>
+</header><p>RegExp is esoteric, known to all, but you will find it incredibly effecient when you start to get used to it. I like to use RegExp, but sometimes I tend to make mistakes, the most common of which is to repeat a capturing group. Let&rsquo;s think about this. Given a string <code>'a=1;b=2;...;k=n'</code>, I would like to capture <code>k, n</code> of each pair to form an array like <code>['a', 1, 'b', 2, ... 'k', n]</code>.</p>
+<p><span class=more></span></p>
+<p>Below is our first try:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=kd>var</span> <span class=nx>s</span> <span class=o>=</span> <span class=s1>&#39;a=1;b=2;c=3&#39;</span><span class=p>;</span>
+<span class=kd>var</span> <span class=nx>r</span> <span class=o>=</span> <span class=sr>/(?:(\w)=(\d))?(?:;(\w)=(\d))*/</span><span class=p>;</span>
+
+<span class=c1>// expected to be [&#39;a&#39;, 1, &#39;b&#39;, 2, &#39;c&#39;, 3]
+</span><span class=c1></span><span class=nx>s</span><span class=p>.</span><span class=nx>match</span><span class=p>(</span><span class=nx>r</span><span class=p>).</span><span class=nx>slice</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>7</span><span class=p>);</span> <span class=c1>// [&#39;a&#39;, 1, &#39;c&#39;, 3] !ops
+</span></code></pre></div><p>As you can see, <code>b, 2</code> is lost. What happens behind is, when RegExp engine finishes matching for group 3 (which is &lsquo;b&rsquo;) and group 4 (which is 2) it finds the <code>*</code> which makes it redo the match for group 3 and 4 from last index. So <code>b, 2</code> is overridden by <code>c, 3</code>. Here we are trying to repeat a capturing group <code>(?:;(\w)=(\d))*</code> which leads to the unexpected result.</p>
+<p>So can we achieve the goal by global matching? Let&rsquo;s do the second try:</p>
+<div class=highlight><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=kd>var</span> <span class=nx>s</span> <span class=o>=</span> <span class=s1>&#39;a=1;b=2;c=3&#39;</span><span class=p>;</span>
+<span class=kd>var</span> <span class=nx>r</span> <span class=o>=</span> <span class=sr>/(?:(\w)=(\d))/g</span><span class=p>;</span>
+
+<span class=c1>// expected to be [&#39;a&#39;, 1, &#39;b&#39;, 2, &#39;c&#39;, 3]
+</span><span class=c1></span><span class=nx>s</span><span class=p>.</span><span class=nx>match</span><span class=p>(</span><span class=nx>r</span><span class=p>);</span> <span class=c1>// [&#39;a=1&#39;, &#39;b=2&#39;, &#39;c=3&#39;] !ops
+</span></code></pre></div><p>Looks like it&rsquo;s even further from what we expected. That&rsquo;s true, in global matching, capturing group lose it&rsquo;s magic and it always return the matching result as a whole RegExp.</p>
+<p>Finally we yield to use some JavaScript snippet, various ways to go, not to address here.</p>
+<hr>
+<p><a href=http://www.regular-expressions.info/captureall.html>http://www.regular-expressions.info/captureall.html</a></p>
+</article>
+</main><footer id=footer>
+Copyright © 2022 hjl
+</footer>
+</body>
+</html>
