@@ -5,6 +5,7 @@ draft = false
 slug = ""
 tags = ["regex"]
 title = "Repeat a capturing group, pitfall in RegExp"
+expiryDate = "2022-12-31"
 
 +++
 

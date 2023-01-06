@@ -1,7 +1,7 @@
 baseURL = "https://hujiale.me"
 languageCode = "en-US"
 title = "栖雲樓"
-theme = "etch"
+# theme = "etch"
 # googleAnalytics = "UA-57201547-1"
 googleAnalytics = "G-Q50DZDP25S"
 
@@ -36,7 +36,10 @@ enableEmoji = true
 	tag = "tags"
 
 [frontmatter]
-  lastmod = [':git', ':fileModTime']
+  date = ["date", "publishDate", "lastmod"]
+  lastmod = [":git", ":fileModTime"]
+  publishDate = ["publishDate", "date"]
+  expireDate = ["expireDate"]
 
 [params]
   description = "栖雲樓"

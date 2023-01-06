@@ -5,6 +5,7 @@ draft: false
 title: "Get ready for FreeBSD"
 categories: ["tech"]
 tags: ["freebsd"]
+expiryDate: "2022-12-31"
 
 ---
 

@@ -6,6 +6,7 @@ title: "Install Youcompleteme with pathogen in neovim"
 slug: ""
 categories: ["tech"]
 tags: ["vim", "neovim"]
+expiryDate: "2022-12-31"
 
 ---
 

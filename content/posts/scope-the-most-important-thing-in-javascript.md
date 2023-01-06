@@ -5,6 +5,7 @@ draft = false
 slug = ""
 tags = ["javascript"]
 title = "Scope, the most important thing in JavaScript"
+expiryDate = "2022-12-31"
 
 +++
 

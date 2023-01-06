@@ -3,6 +3,7 @@ title = "Cookie sync in programmatic advertising"
 categories = ["programmatic advertising"]
 tags = ["cookie", "RTB"]
 date = "2017-03-29T11:35:33+08:00"
+expiryDate = "2022-12-31"
 
 +++
 
