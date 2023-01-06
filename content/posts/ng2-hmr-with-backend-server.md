@@ -5,6 +5,7 @@ draft = false
 slug = ""
 tags = ["angular2"]
 title = "Angular2 HMR with backend server supported"
+expiryDate = "2022-12-31"
 
 +++
 

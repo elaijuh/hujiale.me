@@ -6,6 +6,7 @@ title: "Cron need root password to be set"
 slug: ""
 categories: ["tech"]
 tags: ["unix, cron"]
+expiryDate: "2022-12-31"
 
 ---
 

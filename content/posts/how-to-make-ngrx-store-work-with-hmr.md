@@ -5,6 +5,7 @@ draft = false
 slug = ""
 tags = ["angular2", "ngrx"]
 title = "How to make ngrx/store work with HMR"
+expiryDate = "2022-12-31"
 
 +++
 In my previous post, I talked of a way to develop angular 2 app with HMR.

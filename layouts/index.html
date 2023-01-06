@@ -1,0 +1,38 @@
+{{ define "main" }}
+
+<header>
+    <h1>{{ .Site.Title }}</h1>
+</header>
+<div class="box">
+    <span class="bold">me:</span>
+    <ul>
+        <li>hjiale@gmail.com</li>
+        <li>2023: survive</li>
+    </ul>
+</div>
+<div class="box">
+    <span class="bold">recent reading:</span>
+    <ul>
+	<li></li>
+    </ul>
+</div>
+<div class="box">
+    <span class="bold"><a href="{{ "posts" | relURL }}">recent writing:</a></span>
+    <ul>
+    {{ $limit := 7 }}
+    {{ $posts := site.RegularPages }}
+    {{ $limit_exceed := false }}
+    {{ if (gt (len $posts) $limit) }}
+        {{ $limit_exceed = true }}
+	{{ $posts = (first $limit $posts) }}
+    {{ end }}
+    {{ range $post := $posts}}
+        <li><a href="{{ $post.Permalink | relURL }}">{{ $post.Date | time.Format .Site.Params.date_format }}: {{ $post.Title }}</a></li>
+    {{ end }}
+    {{ if $limit_exceed }}
+    <li><a href="{{ "posts" | relURL }}">more...</a></li>
+    {{ end }}
+    </ul>
+</div>
+
+{{end}}

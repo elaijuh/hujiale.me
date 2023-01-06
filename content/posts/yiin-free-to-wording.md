@@ -5,6 +5,7 @@ draft = false
 slug = ""
 tags = ["life"]
 title = "yiin, free to wording"
+expiryDate = "2022-12-31"
 
 +++
 

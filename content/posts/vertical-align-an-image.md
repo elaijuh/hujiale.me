@@ -5,6 +5,7 @@ draft = false
 slug = ""
 tags = ["css"]
 title = "Vertical align an unknown size image"
+expiryDate = "2022-12-31"
 
 +++
 

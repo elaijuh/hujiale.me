@@ -5,6 +5,7 @@ draft = false
 slug = ""
 tags = ["javascript"]
 title = "JavaScript prototype and inheritance"
+expiryDate = "2022-12-31"
 
 +++
 

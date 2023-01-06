@@ -5,6 +5,7 @@ draft = false
 slug = ""
 tags = ["angular1"]
 title = "Unit test Angular directive"
+expiryDate = "2022-12-31"
 
 +++
 

@@ -5,6 +5,7 @@ draft = false
 slug = ""
 tags = ["angular1"]
 title = " $provide.decorator - tweak Angular servicer"
+expiryDate = "2022-12-31"
 
 +++
 

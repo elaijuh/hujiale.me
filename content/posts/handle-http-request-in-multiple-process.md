@@ -5,7 +5,7 @@ draft = false
 slug = ""
 tags = ["nodejs"]
 title = "Handle HTTP request in multiple processes in NodeJS"
-
+expiryDate = "2022-12-31"
 +++
 
 NodeJS is single process based which is good at frequent IO operations. But single process can't fully utilize multi-core CPU. Luckily we have `child-process` module in NodeJS to spawn multiple processes. One of the practical examples is handling HTTP request, especially for a large number of concurrent requests. A common way is to use master-worker pattern, a master process working as a proxy to delegate the HTTP requests to child processes with load balance enabled. Cons of master-worker is rapid resource consuming as each process needs to listen on a different port. Another ninja way is to make each child process listen on the same port. Let's have a look at how to achieve that:
