@@ -1,12 +1,16 @@
 {{ define "main" }}
 <h1>{{ .Title }}</h1>
 {{ .Content }}
-{{ $posts := site.RegularPages }}
-{{ range $post := $posts}}
+{{ if eq .Title "posts" }}
+    {{ $posts := where site.RegularPages "Section" "posts" }}
+    {{ range $post := $posts}}
 <div class="box">
     <a href="{{ $post.Permalink | relURL }}">{{ $post.Title }}</a><br>
     <span>{{ $post.Date | time.Format .Site.Params.date_format}}</span><br>
+    {{ if ne .Params.tags nil }}
     <span class="small">{{ delimit .Params.tags ", " }}</span>
+    {{ end }}
 </div>
+    {{ end }}
 {{ end }}
 {{ end }}

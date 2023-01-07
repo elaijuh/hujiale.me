@@ -1,9 +1,6 @@
 ---
-title: "hjl"
-tags: []
-expiryDate: 2022-12-31
+title: hjl
 ---
-
 
 {{< figure src="https://i.loli.net/2019/09/17/zUIsXjOWGANltLF.jpg" height="200" width="200" title="do & me" >}}
 
@@ -12,7 +9,8 @@ expiryDate: 2022-12-31
 
 :postbox: hjiale@gmail.com
 
-:scroll: 2022 -> cloud | architect | sanskrit | german
+:scroll: 2022 -> cloud | architect | sanskrit | german +
+2023 -> survive
 
 :bulb: stateless | minimalism | critique
 

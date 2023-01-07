@@ -6,8 +6,11 @@
 <div class="box">
     <span class="bold">me:</span>
     <ul>
-        <li>hjiale@gmail.com</li>
         <li>2023: survive</li>
+        <li>hjiale@gmail.com</li>
+        {{ range $post := where site.RegularPages "Section" "me"}}
+        <li><a href="{{ $post.Permalink | relURL }}">{{ $post.Title }}</a></li>
+        {{ end }}
     </ul>
 </div>
 <div class="box">
@@ -20,7 +23,8 @@
     <span class="bold"><a href="{{ "posts" | relURL }}">recent writing:</a></span>
     <ul>
     {{ $limit := 7 }}
-    {{ $posts := site.RegularPages }}
+    {{/* $posts := site.RegularPages */}}
+    {{ $posts := where site.RegularPages "Section" "posts" }}
     {{ $limit_exceed := false }}
     {{ if (gt (len $posts) $limit) }}
         {{ $limit_exceed = true }}
