@@ -67,6 +67,7 @@ a:visited {
 pre {
   border: 1px solid var(--foreground-color);
   padding: 1em;
+  overflow-x: auto;
 }
 
 :not(pre) > code {
