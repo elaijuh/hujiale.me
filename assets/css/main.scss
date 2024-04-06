@@ -7,13 +7,21 @@
   }
 }
 
+@font-face {
+  font-family: ProggyVector;
+  src: url(ProggyVector-Regular.woff2);
+}
+
 html, body { background: var(--background-color); }
 
 html { height: 100%; }
 
 body {
   color: var(--foreground-color);
-  font-family: monospace;
+  // font-family: monospace;
+  font-family: ProggyCleanTTSZ, "LXGW WenKai", sans-serif;
+  // font-family: ProggyVector, "LXGW WenKai", sans-serif;
+  // font-size: 0.8em;
   max-width: 40em;
   overflow-wrap: break-word;
 }
@@ -58,6 +66,11 @@ pre {
   background: var(--foreground-color);
   padding: 0.1em 0.2em;
   font-size: 90%;
+}
+
+code {
+  // font-family: ProggyVector;
+  font-family: ProggyCleanTTSZ;
 }
 
 img {

@@ -5,38 +5,47 @@
 </header>
 <div class="box">
     <span class="bold">me:</span>
+    <img src="https://s2.loli.net/2024/04/06/ZD4uy5QpCb3HmOX.png" width=100 title="dad">
     <ul>
-        <li>2023: survive</li>
-        <li>hjiale@gmail.com</li>
-        {{ range $post := where site.RegularPages "Section" "me"}}
+      <li>software engineer</li>
+      <li>email:hjiale@gmail.com, x:@hjiale</li>
+      {{ range $post := where site.RegularPages "Section" "me"}}
+      <li><a href="{{ $post.Permalink | relURL }}">{{ $post.Title }}</a></li>
+      {{ end }}
+    </ul>
+</div>
+<div class="box">
+    <span class="bold">project:</span>
+    <ul>
+        {{ range $post := where site.RegularPages "Section" "project"}}
         <li><a href="{{ $post.Permalink | relURL }}">{{ $post.Title }}</a></li>
         {{ end }}
     </ul>
 </div>
-<div class="box">
-    <span class="bold">recent reading:</span>
-    <ul>
-	<li></li>
-    </ul>
-</div>
+<!-- <div class="box"> -->
+<!--     <span class="bold">recent reading:</span> -->
+<!--     <ul> -->
+<!-- 	      <li></li> -->
+<!--     </ul> -->
+<!-- </div> -->
 <div class="box">
     <span class="bold"><a href="{{ "posts" | relURL }}">recent writing:</a></span>
     <ul>
-    {{ $limit := 7 }}
+    {{ $limit := 9 }}
     {{/* $posts := site.RegularPages */}}
     {{ $posts := where site.RegularPages "Section" "posts" }}
     {{ $limit_exceed := false }}
     {{ if (gt (len $posts) $limit) }}
-        {{ $limit_exceed = true }}
-	{{ $posts = (first $limit $posts) }}
+      {{ $limit_exceed = true }}
+	    {{ $posts = (first $limit $posts) }}
     {{ end }}
     {{ range $post := $posts}}
         <li><a href="{{ $post.Permalink | relURL }}">{{ $post.Date | time.Format .Site.Params.date_format }}: {{ $post.Title }}</a></li>
     {{ end }}
     {{ if $limit_exceed }}
-    <li><a href="{{ "posts" | relURL }}">more...</a></li>
+      <li><a href="{{ "posts" | relURL }}">more...</a></li>
     {{ end }}
     </ul>
 </div>
 
-{{end}}
+{{ end }}

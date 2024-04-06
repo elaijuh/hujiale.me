@@ -3,10 +3,8 @@ title: gpg
 date: 2023-01-07T23:15:42+08:00
 ---
 
-[source]
-----
+```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
-
 mDMEY7mJoxYJKwYBBAHaRw8BAQdAO8JZRh+7CSRn1vzHl3ZnZvL8WfL429VlVBbK
 onC2bPu0FmhqbCA8aGppYWxlQGdtYWlsLmNvbT6IkwQTFgoAOxYhBJXIOrtAR48n
 fKw6qGfm9cv3mcUBBQJjuYmjAhsDBQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheA
@@ -18,4 +16,4 @@ E3sA/Rl18DrGApyRMKT8N0QSe8BpUNbrbn3h4HgMatBxqXg6AQDseZPhOaVqHSbm
 iUnFPB/C0Efl9qs0em230A8pa6WyBg==
 =auiZ
 -----END PGP PUBLIC KEY BLOCK-----
-----
+```

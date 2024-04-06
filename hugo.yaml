@@ -1,0 +1,50 @@
+baseURL: https://hujiale.me
+languageCode: en-US
+title: moo
+buildExpired: false
+enableEmoji: true
+googleAnalytics: G-Q50DZDP25S
+
+taxonomies:
+  category: categories
+  tag: tags
+
+frontmatter:
+  date:
+    - date
+    - publishDate
+    - lastmod
+  lastmod:
+    - :git
+    - :fileModTime
+  publishDate: 
+    - publishDate
+    - date
+  expireDate:
+    - expireDate
+
+params:
+  date_format: 2006-01-02
+  favicon: /images/favicon.ico
+
+markup:
+  asciidocExt:
+    attributes: {}
+    backend: html5
+    extensions: [asciidoctor-html5s, asciidoctor-diagram]
+    failureLevel: fatal
+    noHeaderOrFooter: true
+    preserveTOC: false
+    safeMode: unsafe
+    sectionNumbers: false
+    trace: false
+    verbose: false
+    workingFolderCurrent: false
+  goldmark:
+    renderer:
+      unsafe: true
+
+security:
+  exec:
+    allow:
+    - ^asciidoctor$
