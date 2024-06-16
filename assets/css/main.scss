@@ -8,16 +8,9 @@
 }
 
 @font-face {
-  font-family: ProggyCleanTTSZ;
+  font-family: ComicMonoNF;
   font-style: normal;
-  font-weight: 400;
-  src: url('/fonts/ProggyCleanSZ.woff');
-}
-@font-face {
-  font-family: ProggyVector;
-  font-style: normal;
-  font-weight: 400;
-  src: url('/fonts/ProggyVector-Regular.woff2');
+  src: url('/fonts/ComicShannsMonoNerdFont-Regular.otf');
 }
 
 html, body { background: var(--background-color); }
@@ -26,10 +19,8 @@ html { height: 100%; }
 
 body {
   color: var(--foreground-color);
-  // font-family: monospace;
-  font-family: ProggyCleanTTSZ, "LXGW WenKai", monospace;
-  // font-family: ProggyVector, "LXGW WenKai", monospace;
-  // font-size: 0.8em;
+  font-family: ComicMonoNF, "LXGW WenKai", monospace;
+  font-size: 0.8em;
   max-width: 40em;
   overflow-wrap: break-word;
 }
@@ -78,8 +69,7 @@ pre {
 }
 
 code {
-  // font-family: ProggyVector;
-  font-family: ProggyCleanTTSZ;
+  font-family: ComicMonoNF;
 }
 
 img {

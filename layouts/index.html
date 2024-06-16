@@ -8,7 +8,8 @@
     <img src="https://s2.loli.net/2024/04/06/ZD4uy5QpCb3HmOX.png" width=100 title="dad">
     <ul>
       <li>software engineer</li>
-      <li>email:hjiale@gmail.com, x:@hjiale</li>
+      <li>email: hjiale@gmail.com</li>
+      <li>x: @hjiale</li>
       {{ range $post := where site.RegularPages "Section" "me"}}
       <li><a href="{{ $post.Permalink | relURL }}">{{ $post.Title }}</a></li>
       {{ end }}
