@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="{{ .Config.Language }}">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ block "title" . }}{{ .Config.Title }}{{ end }}</title>
+  <meta name="description" content="{{ block "description" . }}{{ .Config.Description }}{{ end }}">
+  <link href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA7P//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREREREREREREREREREREREREAAAARERERAAAAAAAREQAAAAAAAAAREAAAAAAAAREAABAAABAAERABEAABEAERAAAAAAAAABEQAAAAAAABERAAAAAAAAEREQAAEQAAERERAAEREAAREREQERERAREREREREREREREREREREREREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rel="icon" type="image/x-icon">
+  <link rel="alternate" type="application/rss+xml" href="{{ .Config.BaseURL }}/feed.xml">
+  <style>
+
+* {
+  box-sizing: border-box
+}
+
+:root {
+  --background-color: #ffffea;
+  --border-color: #000;
+  --content-width: 840px;
+  --green-color: #57864e;
+  --cyan-color: #efeeec;
+  --purple-color: #8888c7;
+  --blue-color: #eefeff;
+
+}
+
+::selection {
+  background: var(--green-color);
+  color: #fff
+}
+
+body {
+  font-family: sans-serif;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  line-height: 160%;
+  background: var(--background-color);
+}
+
+header {
+  margin-block-start: 1em;
+  margin-block-end: 4em;
+}
+
+header nav {
+  display: flex;
+  gap: 1em;
+  align-items: center;
+  padding: .5em 0;
+  border-bottom: 2px solid #000
+}
+
+header nav a {
+  color: #000;
+}
+
+header nav span.title {
+  font-weight: 700
+}
+
+section {
+  margin-block-start: 3em;
+  margin-block-end: 3em
+}
+
+blockquote {
+  border-left: .2em solid #000;
+  padding-left: 1em;
+  margin-left: 0
+}
+
+footer {
+  font-size: small
+}
+
+ul.post-list {
+  padding: 0
+}
+
+ul.post-list li {
+  display: flex;
+  gap: 1em;
+  align-items: center;
+  padding: .25em 0
+}
+
+ul.post-list li time {
+  min-width: 50px
+}
+
+a {
+  color: var(--green-color);
+  text-decoration: none
+}
+
+a:hover {
+  text-decoration: underline
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-size: initial
+}
+
+article h2,
+article h3,
+article h4 {
+  margin-block-start: 2.5em
+}
+
+article h1 {
+  font-size: 130%;
+  line-height: 110%
+}
+
+article code {
+  background: var(--cyan-color);
+  background: #effeec;
+  padding: 0 .2em
+}
+
+article pre {
+  border: 1px solid var(--border-color);
+  padding: 1em;
+  line-height: 140%;
+  text-wrap: nowrap;
+  overflow-x: auto;
+  background: var(--background-color) !important;
+}
+
+article pre>code {
+  background: initial;
+  padding: 0
+}
+
+img,
+video,
+audio {
+  max-width: 100%
+}
+
+figure {
+  display: flex;
+  justify-content: center;
+  margin: 1.5em 0
+}
+
+table {
+  width: 100%;
+  border: 1px solid var(--border-color);
+  border-collapse: collapse
+}
+
+table thead {
+  background: var(--blue-color);
+  border: 1px solid #000
+}
+
+table td,
+table th {
+  text-align: left;
+  padding: .4em .6em
+}
+
+table tbody tr {
+  border-bottom: 1px solid var(--border-color)
+}
+
+.tags mark {
+  font-family: monospace;
+  padding: 0 .2em
+}
+
+.static-prefix {
+  width: 7em
+}
+
+.multicolumn-list {
+  column-count: 3;
+  column-gap: 3em
+}
+
+.multicolumn-list a {
+  display: block;
+  margin-bottom: .5rem;
+  break-inside: avoid
+}
+
+.project-release table tr td:last-child {
+  text-align: right
+}
+
+.project-release table tr th:last-child {
+  text-align: right
+}
+
+.project-list ul {
+  column-count: 3;
+  column-gap: 3em
+}
+
+.github-link p {
+  display: flex;
+  align-items: center;
+  gap: .3em
+}
+
+.github-link p img {
+  border: 0;
+  padding: 0;
+  height: 15px
+}
+
+.thumbnails {
+  display: flex;
+  gap: 1em
+}
+
+.thumbnails div a {
+  display: block;
+  height: 9em;
+  margin: 0;
+  padding: 0
+}
+
+.thumbnails div a img {
+  height: 100%;
+  margin: 0;
+  padding: 0
+}
+
+.thumbnails div .name {
+  font-size: small;
+  font-weight: 700;
+  font-style: italic
+}
+
+article iframe {
+  margin: 0 !important
+}
+
+pre code span {
+  display: initial !important
+}
+
+@media only screen and (max-width:860px) {
+  body {
+  margin: auto;
+  padding: 1em
+  }
+
+  ul.post-list li time {
+  display: none
+  }
+
+  .multicolumn-list {
+  column-count: 2
+  }
+
+  .project-list ul {
+  column-count: 2
+  }
+
+  .hide-on-mobile {
+  display: none
+  }
+}
+
+@media print {
+
+  header,
+  footer {
+  display: none
+  }
+}
+  </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <span class="title hide-on-mobile static-prefix">HJL</span>
+        <a href="/">Home</a>
+      </nav>
+    </header>
+    <main>
+      {{ block "content" . }}{{ end }}
+    </main>
+    <section>
+    </section>
+    <footer>
+    <p>You can reach out to me at <a href="mailto:hjiale@gmail.com">hjiale@gmail.com</a></p>
+    <p>This page is available as <a href="{{ .Config.BaseURL }}/feed.xml">RSS feed</a>. Built with <a href="https://github.com/mitjafelicijan/jbmafp" target="_blank">jbmafp</a></p>
+    </footer>
+
+    <script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;47b365c48614449a848da43a772a38bf&quot;,&quot;r&quot;:1,&quot;server_timing&quot;:{&quot;name&quot;:{&quot;cfCacheStatus&quot;:true,&quot;cfEdge&quot;:true,&quot;cfExtPri&quot;:true,&quot;cfL4&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfSpeedBrain&quot;:true},&quot;location_startswith&quot;:null}}" crossorigin="anonymous"></script>
+  </body>
+</html>

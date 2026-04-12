@@ -1,0 +1,18 @@
+{{ template "base.html" . }}
+
+{{ define "content" }}
+<div>
+  <h2>Posts</h2>
+  <ul class="post-list">
+  {{ range .Pages }}
+  {{ if eq .Type "post" }}
+  <li>
+    <time class="static-prefix" datetime={{ .Created.Format "2006-01-02" }}>{{ .Created.Format "2006-01-02" }}</time>
+    <span title="Note"></span>
+    <a href="/{{ .RelPermalink }}">{{ .Title }}</a>
+  </li>
+  {{ end }}
+  {{ end }}
+  </ul>
+</div>
+{{ end }}

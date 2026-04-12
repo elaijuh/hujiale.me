@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="{{ .Config.Language }}">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>{{ block "title" . }}{{ .Config.Title }}{{ end }} - 404</title>
+		<meta name="description" content="{{ block "description" . }}{{ .Config.Description }}{{ end }}"/>
+    <link href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA7P//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREREREREREREREREREREREREAAAARERERAAAAAAAREQAAAAAAAAAREAAAAAAAAREAABAAABAAERABEAABEAERAAAAAAAAABEQAAAAAAABERAAAAAAAAEREQAAEQAAERERAAEREAAREREQERERAREREREREREREREREREREREREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rel="icon" type="image/x-icon">
+		<link rel="alternate" type="application/rss+xml" href="{{ .Config.BaseURL }}/feed.xml" />
+		<style>
+			html { scroll-padding-top: 1.5em; }
+			body { font-family: sans-serif; padding: 0 1em; line-height: 160%; display: flex; flex-direction: column; gap: 4em; }
+			a { color: blue; text-decoration: none; }
+			a:hover { text-decoration: underline; }
+		</style>
+	</head>
+	<body>
+		<main>
+			<h1>404</h1>
+			<strong>Check out the following pages</strong>
+			<ul>
+				<li><a href="/">Home</a></li>
+				<li><a href="/feed.xml">RSS</a></li>
+			</ul>
+		</main>
+	</body>
+</html>

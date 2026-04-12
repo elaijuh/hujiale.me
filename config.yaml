@@ -1,0 +1,22 @@
+title: "HJL"
+baseurl: "https://hujiale.me"
+description: "Truth is defined but never discovered."
+language: "en-us"
+
+# Code highlighting.
+# https://swapoff.org/chroma/playground/
+highlighting: "bw"
+
+# Minifies output HTML (including inline CSS, JS).
+minify: true
+
+# Other generaters, in this case RSS generator.
+extras:
+  - template: feed.xml
+    url: feed.xml
+  - template: robots.txt
+    url: robots.txt
+  - template: 404.html
+    url: 404.html
+  - template: sitemap.xml
+    url: sitemap.xml
